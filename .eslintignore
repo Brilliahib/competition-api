@@ -1,0 +1,5 @@
+# Ignore configs and meta files
+commitlint.config.js
+.lintstagedrc.json
+package.json
+package-lock.json

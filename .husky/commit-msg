@@ -1,0 +1,18 @@
+npx --no -- commitlint --edit "$1" || {
+  echo ""
+  echo "Allowed commit types are:"
+  echo "  feat      A new feature"
+  echo "  fix       A bug fix"
+  echo "  docs      Documentation only changes"
+  echo "  style     Code style changes (no logic)"
+  echo "  refactor  Refactor without behavior change"
+  echo "  perf      Performance improvements"
+  echo "  test      Add or update tests"
+  echo "  build     Build system or dependency changes"
+  echo "  ci        CI/CD configuration changes"
+  echo "  chore     Maintenance tasks, configs, etc."
+  echo "  revert    Revert a previous commit"
+  echo ""
+  echo "Commit message must follow the format: <type>(optional-scope): <subject>"
+  exit 1
+}

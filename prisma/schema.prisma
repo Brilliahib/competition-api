@@ -13,3 +13,32 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  name String
+  password String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  competitions Competition[]
+
+  @@map("users")
+}
+
+model Competition{
+  id Int @id @default(autoincrement())
+  user_id Int 
+  title String
+  description String?
+  university String
+  role String?
+  country String?
+  start_date DateTime
+  end_date DateTime
+  url String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
