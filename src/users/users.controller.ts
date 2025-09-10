@@ -1,0 +1,85 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { UserEntity } from './entities/user.entity';
+
+@Controller('users')
+@ApiTags('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  @Post()
+  @ApiCreatedResponse({
+    description: 'The user has been successfully created.',
+    type: UserEntity,
+  })
+  async create(@Body() createUserDto: CreateUserDto) {
+    const user = await this.usersService.create(createUserDto);
+    return {
+      data: user,
+      message: 'User created successfully',
+    };
+  }
+
+  @Get()
+  @ApiOkResponse({
+    description: 'List of users retrieved successfully.',
+    type: [UserEntity],
+  })
+  async findAll() {
+    const users = await this.usersService.findAll();
+    return {
+      data: users,
+      message: 'Users retrieved successfully',
+    };
+  }
+
+  @Get(':id')
+  @ApiOkResponse({
+    description: 'The user has been successfully retrieved.',
+    type: UserEntity,
+  })
+  async findOne(@Param('id') id: string) {
+    const user = await this.usersService.findOne(+id);
+    return {
+      data: user,
+      message: 'User retrieved successfully',
+    };
+  }
+
+  @Patch(':id')
+  @ApiOkResponse({
+    description: 'The user has been successfully updated.',
+    type: UserEntity,
+  })
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const user = await this.usersService.update(+id, updateUserDto);
+    return {
+      data: user,
+      message: 'User updated successfully',
+    };
+  }
+
+  @Delete(':id')
+  @ApiOkResponse({
+    description: 'The user has been successfully deleted.',
+    type: UserEntity,
+  })
+  async remove(@Param('id') id: string) {
+    const user = await this.usersService.remove(+id);
+    return {
+      data: user,
+      message: 'User deleted successfully',
+    };
+  }
+}
