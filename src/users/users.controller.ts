@@ -23,8 +23,12 @@ export class UsersController {
     description: 'The user has been successfully created.',
     type: UserEntity,
   })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const user = await this.usersService.create(createUserDto);
+    return {
+      data: user,
+      message: 'User created successfully',
+    };
   }
 
   @Get()
@@ -32,8 +36,12 @@ export class UsersController {
     description: 'List of users retrieved successfully.',
     type: [UserEntity],
   })
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    const users = await this.usersService.findAll();
+    return {
+      data: users,
+      message: 'Users retrieved successfully',
+    };
   }
 
   @Get(':id')
@@ -41,8 +49,12 @@ export class UsersController {
     description: 'The user has been successfully retrieved.',
     type: UserEntity,
   })
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const user = await this.usersService.findOne(+id);
+    return {
+      data: user,
+      message: 'User retrieved successfully',
+    };
   }
 
   @Patch(':id')
@@ -50,8 +62,12 @@ export class UsersController {
     description: 'The user has been successfully updated.',
     type: UserEntity,
   })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const user = await this.usersService.update(+id, updateUserDto);
+    return {
+      data: user,
+      message: 'User updated successfully',
+    };
   }
 
   @Delete(':id')
@@ -59,7 +75,11 @@ export class UsersController {
     description: 'The user has been successfully deleted.',
     type: UserEntity,
   })
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const user = await this.usersService.remove(+id);
+    return {
+      data: user,
+      message: 'User deleted successfully',
+    };
   }
 }

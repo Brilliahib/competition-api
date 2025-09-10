@@ -1,19 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { setupApp } from './config/app.config';
+import { setupSwagger } from './config/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder()
-    .setTitle('Median')
-    .setDescription('The Median API description')
-    .setVersion('0.1')
-    .build();
+  setupApp(app);
+  setupSwagger(app);
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port);
 
-  await app.listen(process.env.PORT ?? 3000);
+  console.log(`🚀 Server running at http://localhost:${port}`);
+  console.log(`📖 Swagger docs available at http://localhost:${port}/api`);
 }
+
 bootstrap();

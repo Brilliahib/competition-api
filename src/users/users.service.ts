@@ -1,46 +1,55 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: { ...createUserDto, password: hashedPassword },
     });
+    return new UserEntity(user);
   }
 
-  findAll() {
-    return this.prisma.user.findMany();
+  async findAll(): Promise<UserEntity[]> {
+    const users = await this.prisma.user.findMany();
+    return users.map((u) => new UserEntity(u));
   }
 
-  findOne(id: number) {
-    return this.prisma.user.findUnique({
-      where: { id },
-    });
+  async findOne(id: number): Promise<UserEntity> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(`User not found`);
+    }
+    return new UserEntity(user);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.prisma.user.update({
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    await this.findOne(id);
+    const user = await this.prisma.user.update({
       where: { id },
       data: { ...updateUserDto },
     });
+    return new UserEntity(user);
   }
 
-  remove(id: number) {
-    return this.prisma.user.delete({
-      where: { id },
-    });
+  async remove(id: number): Promise<UserEntity> {
+    await this.findOne(id);
+    const user = await this.prisma.user.delete({ where: { id } });
+    return new UserEntity(user);
   }
 
-  findByEmail(email: string) {
-    return this.prisma.user.findUnique({
-      where: { email },
-    });
+  async findByEmail(email: string): Promise<UserEntity> {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new NotFoundException(`User not found`);
+    }
+    return new UserEntity(user);
   }
 }
