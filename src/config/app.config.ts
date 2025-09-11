@@ -23,6 +23,9 @@ export function setupApp(app: INestApplication): void {
   // Compression (gzip/brotli)
   app.use(compression());
 
+  // Prefix global routes
+  app.setGlobalPrefix('api');
+
   // Pipes
   app.useGlobalPipes(
     new ValidationPipe({
@@ -33,8 +36,10 @@ export function setupApp(app: INestApplication): void {
   );
 
   // Interceptors
-  app.useGlobalInterceptors(new ResponseInterceptor());
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalInterceptors(
+    new ResponseInterceptor(),
+    new ClassSerializerInterceptor(app.get<Reflector>(Reflector)),
+  );
 
   // Filters
   app.useGlobalFilters(new AllExceptionsFilter());
