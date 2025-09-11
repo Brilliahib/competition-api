@@ -1,7 +1,7 @@
 import { Role } from 'generated/prisma';
 
 export interface JwtPayload {
-  sub: number;
+  id: number;
   email: string;
   role: Role;
 }

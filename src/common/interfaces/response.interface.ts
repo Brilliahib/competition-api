@@ -4,5 +4,5 @@ export interface IWrappedResponse<T> {
     statusCode: number;
     message: string;
   };
-  data: T;
+  data: T | null;
 }
