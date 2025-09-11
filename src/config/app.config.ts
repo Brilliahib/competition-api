@@ -23,6 +23,9 @@ export function setupApp(app: INestApplication): void {
   // Compression (gzip/brotli)
   app.use(compression());
 
+  // Prefix global routes
+  app.setGlobalPrefix('api');
+
   // Pipes
   app.useGlobalPipes(
     new ValidationPipe({
